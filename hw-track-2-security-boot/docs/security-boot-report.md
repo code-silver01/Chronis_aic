@@ -1,6 +1,6 @@
-# Security & Boot Report â€” Track HW-2
+# Security & Boot Report — Track HW-2
 
-Generated: 2026-07-12
+Generated: 2026-07-17
 Test suite status: **ALL PASSING**
 
 ## 1. Encryption Daemon (Day 1)
@@ -8,14 +8,14 @@ Full key hierarchy implemented: DIK (generated once, never leaves secure
 storage), DSK (derived daily from DIK + date, never persisted), UPK
 (wraps outer encryption layer), Server Transport Key (fresh per upload
 session). `write_to_storage()` structurally rejects anything that isn't
-an `EncryptedRecord` â€” Rule 1 is enforced at the type level, not by
+an `EncryptedRecord` — Rule 1 is enforced at the type level, not by
 convention.
 
 ## 2. Boot Sequence + Failure Handling (Day 2)
 Boot order implemented exactly as specified. One automated test per
 failure mode in the spec table, all passing against the mock HAL.
 **Open gap:** `power_rails` and `clock_sync` have no explicit row in the
-spec's failure table â€” currently defaulted to HALT-on-failure as a
+spec's failure table — currently defaulted to HALT-on-failure as a
 conservative choice. Confirm this is the intended behavior with the team.
 
 ## 3. Watchdog (Day 3)
@@ -27,14 +27,14 @@ All four power states (Full Active, Conservation, Critical, Emergency)
 implemented and tested against mock battery voltage readings, including
 the notify-once-on-entry behavior for Conservation and the
 ceiling-conflict rule (lower of state-machine level vs. power-state
-ceiling always wins â€” this is a preview of the Day 5 cross-track test).
+ceiling always wins — this is a preview of the Day 5 cross-track test).
 Charge-cycle counting flags "replacement may be needed soon" at 500
 cycles. Daily power report structure implemented.
 
-## 5. Power & Thermal Projection (Day 3) â€” PLANNING ESTIMATE ONLY
+## 5. Power & Thermal Projection (Day 3) — PLANNING ESTIMATE ONLY
 **Not measured, not verified.** Pulled from public datasheets and
 estimated duty cycles per capture-intensity level. Battery capacity
-placeholder: 300mAh â€” update once a real cell is chosen.
+placeholder: 300mAh — update once a real cell is chosen.
 
 | Level | Estimated draw | Estimated runtime |
 |---|---|---|
@@ -45,20 +45,22 @@ placeholder: 300mAh â€” update once a real cell is chosen.
 | L4 | ~437.0 mA | ~0.69 h |
 | L5 | ~471.9 mA | ~0.64 h |
 
-Thermal ceiling: not modeled â€” needs a real thermal simulation or
+Thermal ceiling: not modeled — needs a real thermal simulation or
 datasheet junction-temperature figures once components are locked.
 
 ## 6. Enclosure (Day 3)
 First-pass CAD skeleton and dimension-input checklist in
-`enclosure/enclosure_notes.md`. Datasheet-dimensions-only â€” see the
+`enclosure/enclosure_notes.md`. Datasheet-dimensions-only — see the
 explicit gap list below.
 
 ## 7. Full Test Suite Output
 ```
-============================= test session starts ==============================
-platform linux -- Python 3.12.3, pytest-9.1.1, pluggy-1.6.0 -- /usr/bin/python3
+============================= test session starts =============================
+platform win32 -- Python 3.14.0, pytest-9.0.3, pluggy-1.6.0 -- C:\Users\adity\AppData\Local\Programs\Python\Python314\python.exe
 cachedir: .pytest_cache
-rootdir: /home/claude/chronis-aic/hw-track-2-security-boot
+rootdir: C:\Users\adity\OneDrive\Desktop\Chronis-aic\Chronis_aic\hw-track-2-security-boot
+plugins: anyio-4.13.0, asyncio-1.3.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
 collecting ... collected 44 items
 
 tests/test_boot_sequence.py::test_security_chip_failure_halts_system PASSED [  2%]
@@ -106,21 +108,21 @@ tests/test_watchdog.py::test_other_daemon_failure_triggers_restart_not_halt[ble_
 tests/test_watchdog.py::test_other_daemon_failure_triggers_restart_not_halt[storage_daemon] PASSED [ 97%]
 tests/test_watchdog.py::test_failure_is_logged_in_daemon_status PASSED   [100%]
 
-============================== 44 passed in 0.11s ==============================
+============================= 44 passed in 0.14s ==============================
 
 ```
 
 ## 8. Explicit List of What Needs Real-Hardware Confirmation
 - Actual I2C/communication-bus address conflicts between motion sensor,
-  heart-rate sensor, and any other bus-sharing components â€” cannot be
+  heart-rate sensor, and any other bus-sharing components — cannot be
   caught in simulation.
 - Real thermal behavior under sustained L4/L5 load.
-- Real physical fit and manufacturing tolerances for the enclosure â€”
+- Real physical fit and manufacturing tolerances for the enclosure —
   current CAD model checks bounding boxes only.
-- Real battery discharge curve â€” current model uses a generic lithium
+- Real battery discharge curve — current model uses a generic lithium
   curve as a stand-in.
-- `power_rails` / `clock_sync` failure behavior â€” currently a conservative
+- `power_rails` / `clock_sync` failure behavior — currently a conservative
   default (HALT), not an explicit spec decision. Confirm with the team.
-- Real component current draw at each capture-intensity level â€” current
+- Real component current draw at each capture-intensity level — current
   numbers are datasheet typical-case figures, not measured under this
   specific firmware's actual duty cycle.

@@ -10,14 +10,17 @@ import datetime
 import sys
 import os
 
-sys.path.insert(0, os.path.dirname(__file__))
+# Add both this directory and the parent (where power_thermal_estimate.py lives)
+_here = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, _here)
+sys.path.insert(0, os.path.dirname(_here))
 from power_thermal_estimate import estimate_runtime_hours, estimate_draw_ma, LEVEL_DUTY_CYCLE, BATTERY_CAPACITY_MAH
 
 
 def run_tests():
     result = subprocess.run(
-        ["python3", "-m", "pytest", "tests/", "-v", "--tb=no"],
-        cwd=os.path.dirname(__file__),
+        [sys.executable, "-m", "pytest", "tests/", "-v", "--tb=no"],
+        cwd=os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
         capture_output=True, text=True,
     )
     return result.stdout, result.returncode
@@ -108,7 +111,7 @@ explicit gap list below.
   specific firmware's actual duty cycle.
 """
 
-    out_path = os.path.join(os.path.dirname(__file__), "security-boot-report.md")
+    out_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "security-boot-report.md")
     with open(out_path, "w") as f:
         f.write(report)
 
