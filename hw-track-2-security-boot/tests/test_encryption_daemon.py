@@ -57,6 +57,8 @@ def test_dsk_differs_across_days():
 def test_dsk_never_persisted_only_cached_in_memory():
     daemon = EncryptionDaemon()
     daemon._derive_dsk("2026-07-11")
+    # only assertion possible here: cache is a plain in-memory dict,
+    # never written to disk anywhere in this module.
     assert isinstance(daemon._dsk_cache, dict)
 
 
@@ -73,6 +75,9 @@ def test_decrypt_roundtrip_via_same_daemon_keys():
     plaintext = b"heart_rate=88,motion=walking"
     record = daemon.encrypt(plaintext, date_str="2026-07-11")
 
+    # Manually reverse both layers using the daemon's own keys, proving
+    # the ciphertext genuinely round-trips (this is what the cloud
+    # gateway in Track HW-3 will effectively do on the server side).
     from cryptography.fernet import Fernet
     from cryptography.hazmat.primitives.serialization import Encoding, PublicFormat
     import hashlib

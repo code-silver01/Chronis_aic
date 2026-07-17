@@ -5,10 +5,10 @@ enforces Rule 1: no daemon may write to disk without going through this
 daemon first. Enforcement is structural — write_to_storage() only accepts
 an EncryptedRecord, never raw bytes.
 """
+
 import base64
 import datetime
 import hashlib
-
 from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.hkdf import HKDF

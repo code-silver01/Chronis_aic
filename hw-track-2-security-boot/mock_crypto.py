@@ -11,7 +11,7 @@ CURVE CHOICE: NIST P-256 (secp256r1) with ECDSA — this is deliberate, not
 arbitrary. The ATECC608B only supports P-256 for ECDSA sign/verify, not
 Ed25519. If this mock used Ed25519 instead, "swap the mock for the real
 chip" would actually mean "rewrite the signing logic," which defeats the
-entire point of building against a mock today. Matching the real chip's
+entire point of building against a mock. Matching the real chip's
 actual algorithm now is what makes the later swap a one-line change.
 """
 from cryptography.hazmat.primitives.asymmetric import ec
